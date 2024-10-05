@@ -4,25 +4,98 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Traductor LaTeX de Cadència</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
   </head>
-  <body>
-    <h1 style="margin-left: 30px" align="center">
-      Introdueix aquí el text que vulguis convertir a LaTeX
-    </h1>
-    <br />
-    <div class="row" align="center">
-      <textarea
-        type="text"
-        name="text_input"
-        id="text_input"
-        style="margin-left: 30px; height: 400px; width: 800px"
-        align="center"
-      ></textarea>
-    </div>
-    <div id="output" style="white-space: pre-line" hidden>hola</div>
+  <body style="background-color: #b5f2ed">
+    <div class="container" style="max-width: 1000px">
+      <br />
+      <br />
 
-    <br /><br />
-    <div class="row" align="center"><button class="button" id="convertir">Convertir</button></div>
+      <div class="row">
+        <div class="col">
+          <h1>Convertidor</h1>
+        </div>
+      </div>
+
+      <div>
+        Aquesta eina t'ajuda a convertir les lletres copiades de
+        <a href="https://www.ultimate-guitar.com/explore">Ultimate-Guitar.com</a>
+        a
+        <a href="https://www.overleaf.com/">LaTeX</a>
+        per a fer el llibret de cançons de ràpidament.
+      </div>
+
+      <br />
+      <div id="input_div">
+        <div class="input-group mb-3">
+          <span class="input-group-text">Títol</span>
+          <input
+            type="text"
+            class="form-control"
+            id="title_input"
+            placeholder="Títol de la cançó"
+            aria-label="Títol de la cançó"
+            aria-describedby="basic-addon1"
+          />
+        </div>
+
+        <div class="form-floating">
+          <textarea
+            class="form-control"
+            placeholder="Leave a comment here"
+            id="song_input"
+            style="height: 400px"
+          ></textarea>
+          <label for="song_input">Lletra i Acords</label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div id="output" style="white-space: pre-line; padding: 20px; min-height: 454px" hidden>
+          hola
+        </div>
+      </div>
+      <br />
+
+      <div class="row">
+        <div class="col-2">
+          <button class="btn btn-primary" id="convertir_button" style="width: 120px">
+            Convertir
+          </button>
+        </div>
+
+        <div class="col-4">
+          <div class="col">
+            <input type="checkbox" class="check" id="checkbox" autocomplete="off" checked />
+            La cançó forma part d'un bloc
+          </div>
+        </div>
+        <div class="col-6">
+          <label for="range" class="form-label"
+            >Percentatge de espais per a considerar que una línia són acords:
+          </label>
+          <output id="range_label">50</output>
+          <input
+            type="range"
+            class="form-range"
+            value="50"
+            id="range"
+            onchange="updateTextInput(this.value);"
+          />
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
   </body>
 
   <script src="translator.js" type="text/javascript"></script>

@@ -1,25 +1,76 @@
-/* Utilitats */
+/* Definir IDs */
 
-const ButtonId = "convertir"
-const InputId = "text_input"
+const ButtonId = "convertir_button"
+const TitleInputId = "title_input"
+const SongInputId = "song_input"
+const InputDivId = "input_div"
 const TextId = "output"
+const DropdownId = "dropdown_menu"
+const RangeId = "range"
+const RangeLabelId = "range_label"
+const CheckboxId = "checkbox"
+
+// Variables Globals
+
+let estat = false //False: mode introduir, True: mode latex generat
+let chord_threshold = 0.5
+let inBlock = true
+let title = ""
+
+// Mètodes d'utilitat
 
 function setHidden(textId, state) {
   document.getElementById(textId).hidden = state
+}
+
+function setDisabled(textId, state) {
+  document.getElementById(textId).disabled = state
 }
 
 function setText(textId, text) {
   document.getElementById(textId).innerHTML = text
 }
 
+function getValue(elementId) {
+  return document.getElementById(elementId).value
+}
+
+// Listeners dels botons
+
 document.getElementById(ButtonId).addEventListener("click", function () {
-  click()
+  convertir()
 })
 
-function click() {
-  setText(TextId, compileSong(document.getElementById(InputId).value))
-  setHidden(InputId, true)
-  setHidden(TextId, false)
+document.getElementById(DropdownId).addEventListener("click", function () {})
+
+function updateTextInput(val) {
+  document.getElementById(RangeLabelId).value = val
+  chord_threshold = val / 100
+}
+
+// Funcions quan es realitzen accions
+
+function convertir() {
+  if (estat) {
+    setText(TextId, "")
+    setText(ButtonId, "Convertir")
+    setDisabled(RangeId, false)
+    setDisabled(CheckboxId, false)
+    setHidden(InputDivId, false)
+    setHidden(TextId, true)
+    estat = false
+  } else {
+    inBlock = document.getElementById(CheckboxId).checked
+    title = getValue(TitleInputId)
+    setText(TextId, compileSong(getValue(SongInputId)))
+    setText(ButtonId, "Tornar")
+
+    setDisabled(RangeId, true)
+    setDisabled(CheckboxId, true)
+    setHidden(InputDivId, true)
+    setHidden(TextId, false)
+    estat = true
+  }
 }
 
 /* Codi*/
@@ -79,7 +130,7 @@ function makeSong(lineList) {
 }
 
 function isChords(str) {
-  return (str.split(" ").length - 1) / str.length > 0.5 // Comprova si la línia conté més espais que lletres
+  return (str.split(" ").length - 1) / str.length > chord_threshold // Comprova si la línia conté més espais que lletres
 }
 
 function mergeChords(chordsStr, lyricsStr) {
@@ -119,7 +170,13 @@ function mergeChords(chordsStr, lyricsStr) {
 }
 
 function listToString(list) {
-  let str = `\\begin{multicols}{2} \\begin{guitar} \n \n`
+  let str = ""
+  if (inBlock) {
+    str += "\\subsection{" + title + "}\n"
+  } else {
+    str += "\\section{" + title + "}\n"
+  }
+  str += `\\begin{multicols}{2} \\begin{guitar} \n \n`
   list.forEach((x) => {
     str += x + "\n" // Afegeix cada línia a la cadena final
   })
