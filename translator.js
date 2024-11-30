@@ -1,23 +1,27 @@
 /* Definir IDs */
 
-const ButtonId = "convertir_button"
+const ConvertirButtonId = "convertir_button"
+const CopyButtonId = "copy_button"
 const TitleInputId = "title_input"
 const SongInputId = "song_input"
 const InputDivId = "input_div"
-const TextId = "output"
+const OutputTextId = "output"
+const OutputCardId = "output_card"
 const DropdownId = "dropdown_menu"
 const RangeId = "range"
 const RangeLabelId = "range_label"
-const CheckboxId = "checkbox"
+const BlocCheckboxId = "checkbox_bloc"
+const NewpageCheckboxId = "checkbox_newpage"
+const LenthInput = "lenght_input"
 
 // Variables Globals
 
 let estat = false //False: mode introduir, True: mode latex generat
-let chord_threshold = 0.5
-let inBlock = true
+let space_threshold = 0.4
+let length_threshold = 4
 let title = ""
 
-// Mètodes d'utilitat
+// Mètodes d'utilitat (getters i setters)
 
 function setHidden(textId, state) {
   document.getElementById(textId).hidden = state
@@ -31,49 +35,65 @@ function setText(textId, text) {
   document.getElementById(textId).innerHTML = text
 }
 
+function getText(textId) {
+  return document.getElementById(textId).innerHTML
+}
+
 function getValue(elementId) {
   return document.getElementById(elementId).value
 }
 
 // Listeners dels botons
 
-document.getElementById(ButtonId).addEventListener("click", function () {
+document.getElementById(ConvertirButtonId).addEventListener("click", function () {
   convertir()
 })
 
-document.getElementById(DropdownId).addEventListener("click", function () {})
+document.getElementById(CopyButtonId).addEventListener("click", function () {
+  navigator.clipboard.writeText(getText(OutputTextId))
 
-function updateTextInput(val) {
+  // Alert the copied text
+  alert("Text copiat al porta-retalls")
+})
+
+function updateRangeInput(val) {
   document.getElementById(RangeLabelId).value = val
-  chord_threshold = val / 100
+  space_threshold = val / 100
+}
+
+function updateLenghtInput(val) {
+  length_threshold = val
 }
 
 // Funcions quan es realitzen accions
 
 function convertir() {
   if (estat) {
-    setText(TextId, "")
-    setText(ButtonId, "Convertir")
+    setText(OutputTextId, "")
+    setText(ConvertirButtonId, "Convertir")
     setDisabled(RangeId, false)
-    setDisabled(CheckboxId, false)
+    setDisabled(BlocCheckboxId, false)
+    setDisabled(NewpageCheckboxId, false)
+    setDisabled(LenthInput, false)
     setHidden(InputDivId, false)
-    setHidden(TextId, true)
+    setHidden(OutputCardId, true)
     estat = false
   } else {
-    inBlock = document.getElementById(CheckboxId).checked
     title = getValue(TitleInputId)
-    setText(TextId, compileSong(getValue(SongInputId)))
-    setText(ButtonId, "Tornar")
+    setText(OutputTextId, compileSong(getValue(SongInputId)))
+    setText(ConvertirButtonId, "Tornar")
 
     setDisabled(RangeId, true)
-    setDisabled(CheckboxId, true)
+    setDisabled(BlocCheckboxId, true)
+    setDisabled(NewpageCheckboxId, true)
+    setDisabled(LenthInput, true)
     setHidden(InputDivId, true)
-    setHidden(TextId, false)
+    setHidden(OutputCardId, false)
     estat = true
   }
 }
 
-/* Codi*/
+// Codi convertidor
 
 function separateLines(inputString) {
   let lines = []
@@ -130,7 +150,7 @@ function makeSong(lineList) {
 }
 
 function isChords(str) {
-  return (str.split(" ").length - 1) / str.length > chord_threshold // Comprova si la línia conté més espais que lletres
+  return (str.split(" ").length - 1) / str.length > space_threshold || str.length < length_threshold // Comprova si la línia conté més espais que lletres
 }
 
 function mergeChords(chordsStr, lyricsStr) {
@@ -171,7 +191,7 @@ function mergeChords(chordsStr, lyricsStr) {
 
 function listToString(list) {
   let str = ""
-  if (inBlock) {
+  if (document.getElementById(BlocCheckboxId).checked) {
     str += "\\subsection{" + title + "}\n"
   } else {
     str += "\\section{" + title + "}\n"
@@ -181,6 +201,9 @@ function listToString(list) {
     str += x + "\n" // Afegeix cada línia a la cadena final
   })
   str += `\n \n \\end{guitar} \\end{multicols}`
+  if (document.getElementById(NewpageCheckboxId).checked) {
+    str += `\n \\newpage`
+  }
   return str
 }
 
