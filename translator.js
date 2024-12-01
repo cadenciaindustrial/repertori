@@ -4,12 +4,13 @@ const ConvertirButtonId = "convertir_button"
 const CopyButtonId = "copy_button"
 const TitleInputId = "title_input"
 const SongInputId = "song_input"
-const InputDivId = "input_div"
+const InputCardId = "input_card"
 const OutputTextId = "output"
 const OutputCardId = "output_card"
 const DropdownId = "dropdown_menu"
-const RangeId = "range"
-const RangeLabelId = "range_label"
+const RangeId = "space_range"
+const SpaceRangeLabelId = "space_range_label"
+const TransposeRangeLabelId = "transpose_range_label"
 const BlocCheckboxId = "checkbox_bloc"
 const NewpageCheckboxId = "checkbox_newpage"
 const LenthInput = "lenght_input"
@@ -19,6 +20,7 @@ const LenthInput = "lenght_input"
 let estat = false //False: mode introduir, True: mode latex generat
 let space_threshold = 0.4
 let length_threshold = 4
+let transpose = 0
 let title = ""
 
 // Mètodes d'utilitat (getters i setters)
@@ -56,9 +58,14 @@ document.getElementById(CopyButtonId).addEventListener("click", function () {
   alert("Text copiat al porta-retalls")
 })
 
-function updateRangeInput(val) {
-  document.getElementById(RangeLabelId).value = val
+function updateSpaceRangeInput(val) {
+  document.getElementById(SpaceRangeLabelId).value = val
   space_threshold = val / 100
+}
+
+function updateTransposeRangeInput(val) {
+  document.getElementById(TransposeRangeLabelId).value = val
+  transpose = val
 }
 
 function updateLenghtInput(val) {
@@ -75,7 +82,7 @@ function convertir() {
     setDisabled(BlocCheckboxId, false)
     setDisabled(NewpageCheckboxId, false)
     setDisabled(LenthInput, false)
-    setHidden(InputDivId, false)
+    setHidden(InputCardId, false)
     setHidden(OutputCardId, true)
     estat = false
   } else {
@@ -87,7 +94,7 @@ function convertir() {
     setDisabled(BlocCheckboxId, true)
     setDisabled(NewpageCheckboxId, true)
     setDisabled(LenthInput, true)
-    setHidden(InputDivId, true)
+    setHidden(InputCardId, true)
     setHidden(OutputCardId, false)
     estat = true
   }
@@ -163,6 +170,44 @@ function mergeChords(chordsStr, lyricsStr) {
   let chordFlag = false
   let output = ""
 
+  // Mapping of sharp to flat equivalents
+  const sharpToFlat = {
+    "A#": "Bb",
+    "C#": "Db",
+    "D#": "Eb",
+    "F#": "Gb",
+    "G#": "Ab",
+  }
+
+  // Valid chord prefixes
+  const validChords = ["A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab"]
+
+  // Transform a single chord to its LaTeX representation
+  function transformChord(chord) {
+    // Check for sharp chords and convert to flat equivalent
+    for (const sharp in sharpToFlat) {
+      if (chord.startsWith(sharp)) {
+        chord = chord.replace(sharp, sharpToFlat[sharp])
+        break
+      }
+    }
+
+    // Extract prefix and the rest of the chord
+    const match = chord.match(/^([A-G][b]?)(.*)$/) // Matches chord prefix and the rest
+    if (match) {
+      const [_, prefix, rest] = match // Destructure the prefix and the rest
+      if (validChords.includes(prefix)) {
+        return `\\${prefix} ${rest}`
+      }
+    }
+
+    // If not a valid chord, return as is
+    return chord
+  }
+
+  // Transform each chord in the list
+  chordsList = chordsList.map(transformChord)
+
   chordsList = chordsList.map((chord) => "[" + chord + "]") // Afegeix claudàtors als acords
 
   for (let i = 0; i < Math.max(chordsStr.length, lyricsStr.length); i++) {
@@ -196,7 +241,10 @@ function listToString(list) {
   } else {
     str += "\\section{" + title + "}\n"
   }
-  str += `\\begin{multicols}{2} \\begin{guitar} \n \n`
+  str +=
+    `\\begin{multicols}{2} \\begin{guitar} \n \n \\transpose{` +
+    transpose +
+    `}    %%% CANVIAR PER TRANSPOSAR LA CANÇÓ (valor entre 0 i 11 semitons (ascendent)) %%% \n \n`
   list.forEach((x) => {
     str += x + "\n" // Afegeix cada línia a la cadena final
   })

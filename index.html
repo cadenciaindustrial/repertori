@@ -25,24 +25,43 @@
 
       <div>
         Aquesta eina t'ajuda a convertir les lletres copiades de
-        <a href="https://www.ultimate-guitar.com/explore">Ultimate-Guitar.com</a>
+        <a href="https://www.ultimate-guitar.com/explore">Ultimate-Guitar</a>
         a
         <a href="https://www.overleaf.com/">LaTeX</a>
         per a fer el llibret de cançons de ràpidament.
       </div>
 
       <br />
-      <div id="input_div">
-        <div class="input-group mb-3">
-          <span class="input-group-text">Títol</span>
-          <input
-            type="text"
-            class="form-control"
-            id="title_input"
-            placeholder="Títol de la cançó"
-            aria-label="Títol de la cançó"
-            aria-describedby="basic-addon1"
-          />
+      <div id="input_card">
+        <div class="row">
+          <div class="col-6">
+            <div class="input-group mb-3">
+              <span class="input-group-text">Títol</span>
+              <input
+                type="text"
+                class="form-control"
+                id="title_input"
+                placeholder="Títol de la cançó"
+                aria-label="Títol de la cançó"
+                aria-describedby="basic-addon1"
+              />
+            </div>
+          </div>
+          <div class="col-6">
+            <label for="range" class="form-label" style="padding-top: 5px">Transposar: +</label>
+            <output id="transpose_range_label">0</output>
+            <label for="range" class="form-label">st</label>
+            <input
+              type="range"
+              class="form-range float-end"
+              min="0"
+              max="11"
+              value="0"
+              style="width: 335px; padding-left: 20px; padding-top: 15px"
+              id="transpose_range"
+              onchange="updateTransposeRangeInput(this.value);"
+            />
+          </div>
         </div>
 
         <div class="form-floating">
@@ -94,7 +113,7 @@
             type="number"
             class="form-floating"
             value="4"
-            style="width: 50px"
+            style="width: 50px; border-radius: 8px; border-style: solid"
             id="lenght_input"
             onchange="updateLenghtInput(this.value);"
           />
@@ -113,14 +132,14 @@
         </div>
         <div class="col-6">
           <label for="range" class="form-label">Una línia amb més d'un </label>
-          <output id="range_label">40</output>
+          <output id="space_range_label">40</output>
           <label for="range" class="form-label">% d'espais es considera com acords. </label>
           <input
             type="range"
             class="form-range"
             value="40"
-            id="range"
-            onchange="updateRangeInput(this.value);"
+            id="space_range"
+            onchange="updateSpaceRangeInput(this.value);"
           />
         </div>
       </div>
