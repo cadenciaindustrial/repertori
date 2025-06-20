@@ -14,10 +14,11 @@ const TransposeRangeLabelId = "transpose_range_label"
 const BlocCheckboxId = "checkbox_bloc"
 const NewpageCheckboxId = "checkbox_newpage"
 const LenthInput = "lenght_input"
+const DownloadButtonId = "download_button"
 
 // Variables Globals
 
-let estat = false //False: mode introduir, True: mode latex generat
+let estat = false //False: mode introduir dades, True: mode latex generat
 let space_threshold = 0.4
 let length_threshold = 4
 let transpose = 0
@@ -56,6 +57,23 @@ document.getElementById(CopyButtonId).addEventListener("click", function () {
 
   // Alert the copied text
   alert("Text copiat al porta-retalls")
+})
+
+document.getElementById(DownloadButtonId).addEventListener("click", function () {
+  // Crear un blob (objecte binari) amb el contingut i el tipus MIME
+  const blob = new Blob([getText(OutputTextId)], { type: "text/plain" })
+
+  // Crear un enllaç temporal
+  const enllac = document.createElement("a")
+  enllac.href = URL.createObjectURL(blob)
+  enllac.download = title + ".tex" // Nom del fitxer que es descarregarà
+
+  // Afegir l’enllaç al DOM i clicar-lo automàticament
+  document.body.appendChild(enllac)
+  enllac.click()
+
+  // Eliminar l’enllaç després de la descàrrega
+  document.body.removeChild(enllac)
 })
 
 function updateSpaceRangeInput(val) {

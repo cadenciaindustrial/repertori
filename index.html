@@ -78,18 +78,23 @@
       <div class="card" id="output_card" hidden>
         <div>
           <button
-            class="float-end m-3 col-1 btn btn-outline-secondary"
+            class="float-end m-3 btn btn-outline-secondary"
             style="width: 40px"
             id="copy_button"
           >
             <i class="fa-regular fa-copy"></i>
           </button>
+          <button
+            class="float-end mt-3 btn btn-outline-secondary"
+            style="width: 40px"
+            id="download_button"
+          >
+            <i class="fa-solid fa-download"></i>
+          </button>
           <div
             id="output"
             style="white-space: pre-line; padding: 20px; padding-top: 10px; min-height: 454px"
-          >
-            hola
-          </div>
+          ></div>
         </div>
       </div>
       <br />
@@ -103,7 +108,7 @@
 
         <div class="col-4">
           <div class="col">
-            <input type="checkbox" class="check" id="checkbox_bloc" autocomplete="off" checked />
+            <input type="checkbox" class="check" id="checkbox_bloc" autocomplete="off" />
             La cançó forma part d'un bloc
           </div>
         </div>
