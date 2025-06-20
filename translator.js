@@ -75,6 +75,8 @@ document.getElementById(DownloadButtonId).addEventListener("click", function () 
   // Eliminar l’enllaç després de la descàrrega
   document.body.removeChild(enllac)
   convertir() // Tornar al mode introduir dades
+  document.getElementById(SongInputId).value = "" // Netejar el camp de text de la cançó
+  document.getElementById(TitleInputId).value = "" // Netejar el camp de text del títol
 })
 
 function updateSpaceRangeInput(val) {
