@@ -74,6 +74,7 @@ document.getElementById(DownloadButtonId).addEventListener("click", function () 
 
   // Eliminar l’enllaç després de la descàrrega
   document.body.removeChild(enllac)
+  convertir() // Tornar al mode introduir dades
 })
 
 function updateSpaceRangeInput(val) {
