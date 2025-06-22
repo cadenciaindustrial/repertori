@@ -13,139 +13,196 @@
     <script src="https://kit.fontawesome.com/635600d846.js" crossorigin="anonymous"></script>
   </head>
   <body style="background-color: #b5f2ed">
-    <div class="container" style="max-width: 1000px">
-      <br />
-      <br />
-
-      <div class="row">
-        <div class="col">
-          <h1>Convertidor</h1>
-        </div>
-      </div>
-
-      <div>
-        Aquesta eina t'ajuda a convertir les lletres copiades de
-        <a href="https://www.ultimate-guitar.com/explore">Ultimate-Guitar</a>
-        a
-        <a href="https://www.overleaf.com/">LaTeX</a>
-        per a fer el llibret de cançons de ràpidament.
-      </div>
-
-      <br />
-      <div id="input_card">
+    <div class="container" style="max-width: 880px">
+      <div id="header">
+        <br />
         <div class="row">
-          <div class="col-6">
-            <div class="input-group mb-3">
-              <span class="input-group-text">Títol</span>
-              <input
-                type="text"
-                class="form-control"
-                id="title_input"
-                placeholder="Títol de la cançó"
-                aria-label="Títol de la cançó"
-                aria-describedby="basic-addon1"
-              />
-            </div>
-          </div>
-          <div class="col-6">
-            <label for="range" class="form-label" style="padding-top: 5px">Transposar: +</label>
-            <output id="transpose_range_label">0</output>
-            <label for="range" class="form-label">st</label>
-            <input
-              type="range"
-              class="form-range float-end"
-              min="0"
-              max="11"
-              value="0"
-              style="width: 335px; padding-left: 20px; padding-top: 15px"
-              id="transpose_range"
-              onchange="updateTransposeRangeInput(this.value);"
-            />
+          <div class="col">
+            <h1>Convertidor</h1>
           </div>
         </div>
 
-        <div class="form-floating">
-          <textarea
-            class="form-control"
-            placeholder="Leave a comment here"
-            id="song_input"
-            style="height: 400px"
-          ></textarea>
-          <label for="song_input">Lletra i Acords</label>
-        </div>
-      </div>
-
-      <div class="card" id="output_card" hidden>
         <div>
-          <button
-            class="float-end m-3 btn btn-outline-secondary"
-            style="width: 40px"
-            id="copy_button"
-          >
-            <i class="fa-regular fa-copy"></i>
-          </button>
-          <button
-            class="float-end mt-3 btn btn-outline-secondary"
-            style="width: 40px"
-            id="download_button"
-          >
-            <i class="fa-solid fa-download"></i>
-          </button>
-          <div
-            id="output"
-            style="white-space: pre-line; padding: 20px; padding-top: 10px; min-height: 454px"
-          ></div>
+          Aquesta eina t'ajuda a convertir les lletres copiades de
+          <a href="https://www.ultimate-guitar.com/explore">Ultimate-Guitar</a>
+          a
+          <a href="https://www.overleaf.com/">LaTeX</a>
+          per a fer el llibret de cançons ràpidament.
         </div>
       </div>
-      <br />
-
-      <div class="row">
-        <div class="col-2">
-          <button class="btn btn-primary" id="convertir_button" style="width: 120px">
+      <div
+        id="inici"
+        class="card shadow"
+        style="
+          background: #fff;
+          border-radius: 18px;
+          border: 1px solid #e0e0e0;
+          margin-top: 30px;
+          margin-bottom: 30px;
+          padding: 20px;
+        "
+      >
+        <br />
+        <div style="margin-bottom: 20px">
+          Introdueix l'URL de la pàgina d'acords a descarregar:
+          <span style="color: #888"> (Per ara només es suporten URLs de Ultimate-Guitar)</span>
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text">URL</span>
+          <input
+            type="text"
+            class="form-control"
+            id="url_input"
+            placeholder="https://www.ultimate-guitar.com/..."
+            aria-label="URL dels acords a descarregar"
+            aria-describedby="basic-addon1"
+          />
+          <button class="btn btn-primary col-2" id="url_button" onclick="carregar()">
             Convertir
           </button>
         </div>
+        <div id="status" style="color: #888;"></div>
 
-        <div class="col-4">
-          <div class="col">
-            <input type="checkbox" class="check" id="checkbox_bloc" autocomplete="off" />
-            La cançó forma part d'un bloc
-          </div>
+        <hr />
+        <div style="padding-bottom: 5pt">
+          O bé, pots editar manualment la lletra i els acords de la cançó:
         </div>
-        <div class="col-6">
-          <label for="number" class="form-label">Una línia amb menys de </label>
-          <input
-            type="number"
-            class="form-floating"
-            value="4"
-            style="width: 50px; border-radius: 8px; border-style: solid"
-            id="lenght_input"
-            onchange="updateLenghtInput(this.value);"
-          />
-          <label for="number" class="form-label">caràcters es considera com acords. </label>
-        </div>
+        <button
+          class="btn btn-primary w-100 mt-2"
+          id="manual_edit_button"
+          onclick="manualEditButton()"
+        >
+          Editar manualment
+        </button>
       </div>
 
-      <div class="row">
-        <div class="col-2"></div>
+      <div id="edicio_manual" hidden>
+        <br />
+        <div id="input_card">
+          <div class="row">
+            <div class="col-4">
+              <div class="input-group mb-3">
+                <span class="input-group-text">Títol</span>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="title_input"
+                  placeholder="Títol de la cançó"
+                  aria-label="Títol de la cançó"
+                  aria-describedby="basic-addon1"
+                />
+              </div>
+            </div>
+            <div class="col-6">
+              <label for="range" class="form-label" style="padding-top: 5px">Transposar: +</label>
+              <output id="transpose_range_label">0</output>
+              <label for="range" class="form-label">st</label>
+              <input
+                type="range"
+                class="form-range float-end"
+                min="0"
+                max="11"
+                value="0"
+                style="width: 280px; padding-left: 20px; padding-top: 15px"
+                id="transpose_range"
+                onchange="updateTransposeRangeInput(this.value);"
+              />
+            </div>
+            <div class="col-2">
+              <button
+                class="btn btn-primary"
+                id="convertir_button"
+                style="width: 120px"
+                onclick="convertir()"
+              >
+                Convertir
+              </button>
+            </div>
+          </div>
 
-        <div class="col-4">
-          <div class="col">
-            <input type="checkbox" class="check" id="checkbox_newpage" autocomplete="off" />
-            Afegir salt de pàgina al final de la cançó
+          <div class="form-floating">
+            <textarea
+              class="form-control"
+              placeholder="Leave a comment here"
+              id="song_input"
+              style="height: 400px"
+            ></textarea>
+            <label for="song_input">Lletra i Acords</label>
           </div>
         </div>
-        <div class="col-6">
-          <label for="range" class="form-label">Una línia amb més d'un </label>
-          <output id="space_range_label">40</output>
-          <label for="range" class="form-label">% d'espais es considera com acords. </label>
-          <input
-            type="range"
-            class="form-range"
-            value="40"
-            id="space_range"
-            onchange="updateSpaceRangeInput(this.value);"
-          />
+
+        <div class="card" id="output_card" hidden>
+          <div>
+            <button
+              class="float-end m-3 col-1 btn btn-outline-secondary"
+              style="width: 40px"
+              id="copy_button"
+            >
+              <i class="fa-regular fa-copy"></i>
+            </button>
+            <button
+              class="float-end mt-3 btn btn-outline-secondary"
+              style="width: 40px"
+              id="download_button"
+            >
+              <i class="fa-solid fa-download"></i>
+            </button>
+            <button
+              class="float-end m-3 btn btn-outline-secondary"
+              style="width: 80px"
+              id="back_button"
+              onclick="convertir()"
+            >
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div
+              id="output"
+              style="white-space: pre-line; padding: 20px; padding-top: 10px; min-height: 454px"
+            ></div>
+          </div>
+        </div>
+        <br />
+
+        <div class="row">
+          <div class="col-5">
+            <div class="col">
+              <input type="checkbox" class="check" id="checkbox_bloc" autocomplete="off" checked />
+              La cançó forma part d'un bloc
+            </div>
+          </div>
+          <div class="col-7">
+            <label for="number" class="form-label">Una línia amb menys de </label>
+            <input
+              type="number"
+              class="form-floating"
+              value="4"
+              style="width: 50px; border-radius: 8px; border-style: solid"
+              id="lenght_input"
+              onchange="updateLenghtInput(this.value);"
+            />
+            <label for="number" class="form-label">caràcters es considera com acords. </label>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-5">
+            <div class="col">
+              <input type="checkbox" class="check" id="checkbox_newpage" autocomplete="off" />
+              Afegir salt de pàgina al final de la cançó
+            </div>
+          </div>
+          <div class="col-7">
+            <label for="range" class="form-label">Una línia amb més d'un </label>
+            <output id="space_range_label">40</output>
+            <label for="range" class="form-label">% d'espais es considera com acords. </label>
+            <input
+              type="range"
+              class="form-range"
+              value="40"
+              id="space_range"
+              onchange="updateSpaceRangeInput(this.value);"
+            />
+          </div>
         </div>
       </div>
     </div>
